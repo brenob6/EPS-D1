@@ -1,0 +1,42 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Code Security & Lint
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  checks:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar Poetry
+        run: pip install poetry
+
+      - name: Instalar dependencias
+        run: poetry install
+
+      - name: Rodar Bandit
+        run: poetry run bandit -r .
+
+      - name: Rodar Safety
+        run: poetry run safety check
+
+      - name: Rodar Ruff
+        run: poetry run ruff check .
